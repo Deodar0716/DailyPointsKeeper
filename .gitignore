@@ -1,0 +1,33 @@
+# Everything runtime-generated stays out of git. Logs, state files and the
+# pending-notification queue contain claim ids, balances and masked token
+# *shapes* — none of that belongs in a public repository.
+var/
+config.json
+config.local.json
+
+# Local credential scratch files people create while debugging. Never commit
+# these; a bearer token is a full login.
+*.token
+*.info
+auth.json
+auth-state.json
+notify_pending.json
+hermes_target.txt
+hermes_exe.txt
+wb_electron.txt
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Windows / editor droppings
+Thumbs.db
+desktop.ini
+.DS_Store
+.idea/
+.vscode/
+*.log

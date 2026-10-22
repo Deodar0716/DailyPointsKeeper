@@ -1,0 +1,47 @@
+{
+  "_comment": "Copy this file to config.json (same folder) and edit. config.json is git-ignored: it is the only place a notification target belongs. Every key below is optional — delete what you do not use and the defaults in keeper/config.py apply.",
+
+  "providers": ["qoder_cn", "workbuddy", "minimax_code"],
+  "timezone_offset_hours": 8,
+
+  "notify": {
+    "channel": "none",
+    "gap_seconds": 35,
+    "pending_max": 8,
+    "pending_keep_days": 3,
+
+    "_hermes_comment": "channel=hermes → runs `hermes send --to <target> --json <text>`. Targets are tried in order (first = primary). Hermes is a local bot gateway: https://github.com/NousResearch/hermes-agent. WeChat targets can be refused until you send the bot one inbound message, so a second target is worth having.",
+    "hermes": {
+      "exe": "C:\\path\\to\\hermes.exe",
+      "targets": ["qqbot:YOUR_BOT_CHAT_ID", "weixin:YOUR_OPEN_ID@im.wechat"]
+    },
+
+    "_webhook_comment": "channel=webhook → one POST. Payload is shaped by hostname: qyapi.weixin.qq.com / oapi.dingtalk.com (text), pushplus (html), *.ftqq.com Server酱 (form), anything else {title,text}.",
+    "webhook": {
+      "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY"
+    }
+  },
+
+  "alert": {
+    "_comment": "Failures are only announced from this minute of the vendor day onward, so five trigger slots cannot produce five panic messages. Set it to your last slot's hour*60.",
+    "last_slot_minutes": 1290
+  },
+
+  "qoder": {
+    "api_base": "https://openapi.qoder.com.cn",
+    "install_dir": "",
+    "client_version": ""
+  },
+
+  "workbuddy": {
+    "electron": "",
+    "helper": "tools/wb_desktop_session.cjs"
+  },
+
+  "minimax": {
+    "api_host": "https://agent.minimax.cn",
+    "token_url": "https://account.minimax.cn/oauth2/token",
+    "refresh_margin_minutes": 5,
+    "desktop_version": ""
+  }
+}

@@ -1,0 +1,41 @@
+NOTICE
+======
+
+DailyPointsKeeper
+Copyright (c) 2026 the contributors. MIT licensed (see LICENSE).
+
+Third-party code and derived knowledge
+--------------------------------------
+
+1. `tools/wb_desktop_session.cjs`
+   Derived from `maureen2215-ai/workbuddy-auto-claim-public` (MIT), a community
+   project. The decryption contract (using the client's own Electron binary as
+   the decryptor instead of extracting its key) is that project's idea; the file
+   header records what was changed. It contains no secret.
+
+2. API and enum descriptions in `docs/mechanisms.md` and the provider module
+   docstrings were obtained by reading the shipped JavaScript of the respective
+   desktop clients on a machine the author owns, and by observing the requests
+   those clients make. No proprietary source file is reproduced in this
+   repository — constants (endpoint paths, field names, status-code enums) are
+   documented because they are needed to interoperate, which is the same
+   approach any API client takes.
+
+3. `keeper/providers/qoder_cn.py` uses Chromium/Electron's own on-disk storage
+   format (`v10` AES-GCM container + Windows DPAPI) to read a session that the
+   logged-in client created for *this Windows user*. Nothing is decrypted that
+   the user could not already read from their own profile.
+
+Usage etiquette
+---------------
+
+* This tool claims rewards that the vendor publishes for *your own* account, at
+  the rate the vendor allows, using the credential already stored on your
+  machine. It does not create accounts, bypass payment, farm other people's
+  accounts, or defeat rate limits — the retry design deliberately spreads
+  attempts across a few scheduled slots per day instead of hammering.
+* Check each vendor's terms yourself. Promotional campaigns change or disappear
+  without notice; several of the enums and parameter sets here were observed in
+  October 2026 and may already be stale. If a vendor asks that this stop, stop.
+* Do not commit `config.json`, logs or state files: they name your accounts. The
+  default `.gitignore` keeps them out of git.

@@ -1,0 +1,68 @@
+name: tests
+
+# Everything in tests/ runs offline: no client installed, no network, no
+# secrets. That is deliberate — CI must be able to prove the judgment rules
+# without anybody's login on the machine.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  rules:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ["3.9", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: byte-compile everything
+        run: python -m compileall -q keeper daily_points_keeper.py tests
+
+      - name: rule tests (no network, no installed client)
+        run: python -m unittest discover -s tests -v
+
+  # Smoke job: the CLI must start and self-report on a machine where none of the
+  # supported clients is installed. `doctor` exits 4 when anything is a WARN —
+  # which is exactly right there — so 0 and 4 both count as "the tool works".
+  # It also proves a missing optional dependency (cryptography) degrades one
+  # provider instead of breaking the import at startup.
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: list providers
+        run: python daily_points_keeper.py list
+
+      - name: doctor reports local readiness
+        run: |
+          set +e                      # a WARN exit here is expected, not a failure
+          python daily_points_keeper.py doctor
+          rc=$?
+          set -e
+          if [ "$rc" != "0" ] && [ "$rc" != "4" ]; then
+            echo "doctor exited $rc; expected 0 (all good) or 4 (some clients absent)"
+            exit 1
+          fi
+          echo "doctor exit $rc accepted"

@@ -1,0 +1,10 @@
+# Only one optional dependency, and only the Qoder adapter needs it:
+# AES-256-GCM to open the client's own `v10` credential container.
+#
+#   python -m pip install -r requirements.txt
+#
+# Everything else is standard library. If you disable the qoder_cn provider in
+# config.json you can skip this file entirely — probe/claim/doctor will report
+# the missing library as a credential problem for that one provider and keep
+# running the others.
+cryptography>=41
