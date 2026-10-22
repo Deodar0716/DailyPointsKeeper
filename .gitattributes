@@ -1,0 +1,14 @@
+# Windows scripts must stay CRLF or the console mangles them; Python and docs
+# normalise to LF in the object database so diffs stay quiet across machines.
+* text=auto eol=lf
+
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+*.png   binary
+*.ico   binary
+*.zip   binary
+
+# Documentation bodies are prose; keep them out of diff noise review.
+*.md    text
